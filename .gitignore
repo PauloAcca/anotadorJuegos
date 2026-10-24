@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Build
+dist/
+*.tsbuildinfo
+
+# Playwright / capturas de test
+test-results/
+playwright-report/
+shots/
+
+# Entorno y sistema
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea/
