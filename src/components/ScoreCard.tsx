@@ -24,7 +24,7 @@ export function ScoreCard({
 }: ScoreCardProps) {
   const historyRef = useRef<HTMLDivElement>(null)
   const amount = Number(inputValue)
-  const isValid = Number.isInteger(amount) && amount > 0
+  const isValid = Number.isInteger(amount) && amount !== 0
   const roundTotal = team.entries
     .filter((entry) => entry.round === round)
     .reduce((sum, entry) => sum + entry.amount, 0)
@@ -40,6 +40,12 @@ export function ScoreCard({
     const element = historyRef.current
     if (element) element.scrollTop = element.scrollHeight
   }, [team.entries.length, round])
+
+  const toggleSign = () => {
+    if (!inputValue) return
+    const next = inputValue.startsWith('-') ? inputValue.slice(1) : `-${inputValue}`
+    onInputChange(next)
+  }
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -72,14 +78,14 @@ export function ScoreCard({
         <span className="score-card__unit">pts</span>
         {flash ? (
           <span className="score-float" key={flash.id} aria-hidden="true">
-            +{flash.amount}
+            {flash.amount >= 0 ? '+' : ''}{flash.amount}
           </span>
         ) : null}
       </div>
 
       <div className="score-card__meta">
         <span className="round-add">
-          Ronda {round}: <strong>+{roundTotal}</strong>
+          Ronda {round}: <strong>{roundTotal >= 0 ? '+' : ''}{roundTotal}</strong>
         </span>
         <span>{target !== null ? `Meta ${target}` : 'Sin límite'}</span>
       </div>
@@ -94,17 +100,26 @@ export function ScoreCard({
         <input
           className="input points-input"
           inputMode="numeric"
-          pattern="[0-9]*"
+          pattern="-?[0-9]*"
           value={inputValue}
           onChange={(event) => onInputChange(event.target.value)}
           placeholder="Puntos"
           aria-label={`Puntos para ${team.name}`}
-          maxLength={5}
+          maxLength={6}
           autoComplete="off"
         />
+        <button
+          type="button"
+          className="btn btn--team btn--sign"
+          onClick={toggleSign}
+          disabled={!inputValue}
+          aria-label="Cambiar signo"
+        >
+          ±
+        </button>
         <button type="submit" className="btn btn--team" disabled={!isValid}>
           <Icon name="plus" size={18} />
-          Sumar
+          Aplicar
         </button>
       </form>
 
@@ -130,7 +145,7 @@ export function ScoreCard({
                 ) : (
                   group.entries.map((entry) => (
                     <span className="score-chip" key={entry.id}>
-                      +{entry.amount}
+                      {entry.amount >= 0 ? '+' : ''}{entry.amount}
                     </span>
                   ))
                 )}

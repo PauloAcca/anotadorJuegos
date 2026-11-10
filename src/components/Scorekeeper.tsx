@@ -81,12 +81,14 @@ export function Scorekeeper({ onHome }: ScorekeeperProps) {
   }
 
   const updateInput = (teamId: string, rawValue: string) => {
-    const sanitized = rawValue.replace(/\D/g, '').slice(0, 5)
+    const hasMinus = rawValue.includes('-')
+    const digits = rawValue.replace(/\D/g, '').slice(0, 5)
+    const sanitized = hasMinus ? `-${digits}` : digits
     setInputs((current) => ({ ...current, [teamId]: sanitized }))
   }
 
   const addPoints = (teamId: string, amount: number) => {
-    if (!game || amount <= 0) return
+    if (!game || amount === 0) return
     const target = game.teams.find((team) => team.id === teamId)
     if (!target) return
 

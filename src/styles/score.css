@@ -344,6 +344,13 @@
   padding: 11px 16px;
 }
 
+.points-form .btn--sign {
+  padding: 11px;
+  width: 44px;
+  min-width: 0;
+  text-align: center;
+}
+
 .score-history {
   display: flex;
   flex-direction: column;
